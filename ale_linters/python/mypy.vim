@@ -78,9 +78,12 @@ function! ale_linters#python#mypy#GetCommand(buffer) abort
     \   ? ' run ' . l:pipenv_name
     \   : ''
 
-    let l:daemon_args = l:daemon_enabled
-    \   ? ' run -- ' . ale#Var(a:buffer, 'python_mypy_daemon_options')
-    \   : ''
+    let l:daemon_args = ''
+    if l:daemon_enabled
+        let l:daemon_args = ' --status-file '
+        \   . ale#Var(a:buffer, 'python_mypy_daemon_status_file')
+        \   . ' run -- ' . ale#Var(a:buffer, 'python_mypy_daemon_options')
+    endif
 
     " We have to always switch to an explicit directory for a command so
     " we can know with certainty the base path for the 'filename' keys below.
